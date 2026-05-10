@@ -6,29 +6,34 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Steps">
-<meta name="theme-color" content="#6b8f71">
+<meta name="theme-color" content="#9b7ec8">
 <title>Step Tracker</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
-
+ 
   :root {
-    --bg: #f5f8f5;
+    --bg: #faf8ff;
     --surface: #ffffff;
-    --surface2: #edf2ed;
-    --text: #1a1f1a;
-    --text-muted: #7a8f7a;
-    --green: #6b8f71;
-    --green-light: #e8f0e9;
-    --green-dark: #4a6b50;
-    --border: #dde8dd;
-    --shadow: rgba(26,40,26,0.07);
-    --radius: 18px;
-    --red: #c0544a;
-    --red-light: #fdecea;
+    --surface2: #f3f0fa;
+    --text: #1e1a2e;
+    --text-muted: #8a7aaa;
+    --lavender: #9b7ec8;
+    --lavender-dark: #7356a8;
+    --lavender-light: #ede8f8;
+    --lilac: #c4aee8;
+    --lilac-light: #f7f4fd;
+    --lilac-mid: #d9ccf0;
+    --border: #e4ddf5;
+    --shadow: rgba(100,70,180,0.07);
+    --radius: 20px;
+    --green: #7aac8a;
+    --green-light: #eaf5ee;
+    --rose: #c07a8a;
+    --rose-light: #fdeef1;
   }
-
+ 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
+ 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -36,42 +41,54 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
+ 
   /* HEADER */
   .header {
-    background: var(--green-dark);
+    background: linear-gradient(135deg, var(--lavender-dark) 0%, var(--lilac) 100%);
     color: #fff;
-    padding: 22px 28px 20px;
-    padding-top: max(22px, env(safe-area-inset-top));
+    padding: 24px 28px 22px;
+    padding-top: max(24px, env(safe-area-inset-top));
   }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .header-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 26px; letter-spacing: -0.3px;
+    font-size: 30px; letter-spacing: -0.4px; line-height: 1;
   }
-  .header-sub {
-    font-size: 13px; color: rgba(255,255,255,0.55);
-    margin-top: 3px; font-weight: 500;
+  .header-emoji { font-size: 28px; line-height: 1; }
+  .header-date { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 5px; font-weight: 500; }
+ 
+  /* AFFIRMATION */
+  .affirmation-bar {
+    background: var(--lilac-light);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px; text-align: center;
+    font-size: 14px; font-style: italic;
+    color: var(--text-muted); line-height: 1.55;
   }
-
+  .affirmation-bar span { color: var(--lavender); font-style: normal; font-size: 13px; margin-right: 6px; }
+ 
   /* MAIN */
   .main {
-    padding: 20px 18px 40px;
-    padding-bottom: max(40px, env(safe-area-inset-bottom));
+    padding: 20px 18px 48px;
+    padding-bottom: max(48px, env(safe-area-inset-bottom));
     display: flex; flex-direction: column; gap: 16px;
   }
-
-  /* WEEKLY SUMMARY */
+ 
+  /* SUMMARY CARD */
   .summary-card {
-    background: var(--green-dark);
+    background: linear-gradient(135deg, var(--lavender-dark) 0%, var(--lavender) 60%, var(--lilac) 100%);
     border-radius: var(--radius);
-    padding: 20px 22px;
+    padding: 22px;
     color: white;
     display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 20px rgba(115,86,168,0.28);
   }
-  .summary-label { font-size: 12px; font-weight: 600; opacity: 0.6; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
-  .summary-value { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1; }
-  .summary-sub { font-size: 12px; opacity: 0.65; margin-top: 4px; }
-  .summary-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.15); }
+  .summary-col { display: flex; flex-direction: column; gap: 3px; }
+  .summary-label { font-size: 11px; font-weight: 600; opacity: 0.6; letter-spacing: 0.07em; text-transform: uppercase; }
+  .summary-value { font-family: 'DM Serif Display', serif; font-size: 30px; line-height: 1; }
+  .summary-sub { font-size: 12px; opacity: 0.65; }
+  .summary-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.2); }
+ 
   .goal-ring { position: relative; width: 64px; height: 64px; }
   .goal-ring svg { display: block; }
   .goal-ring .ring-pct {
@@ -79,149 +96,121 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; font-weight: 700; color: white;
   }
-
-  /* LOG ENTRY */
-  .log-card {
+ 
+  /* CARDS */
+  .card {
     background: var(--surface);
     border-radius: var(--radius);
-    box-shadow: 0 2px 12px var(--shadow);
+    box-shadow: 0 2px 14px var(--shadow);
     overflow: hidden;
   }
-  .log-card-header {
-    padding: 16px 20px 12px;
+  .card-header {
+    padding: 16px 20px 13px;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
-  .log-card-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px; color: var(--text);
-  }
-  .today-badge {
-    font-size: 12px; font-weight: 600;
-    background: var(--green-light); color: var(--green);
-    padding: 4px 10px; border-radius: 20px; letter-spacing: 0.04em;
-  }
-
-  .step-input-wrap {
-    padding: 20px;
-    display: flex; gap: 12px; align-items: center;
-  }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .badge { font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 20px; letter-spacing: 0.04em; }
+ 
+  /* INPUT */
+  .step-input-wrap { padding: 20px; display: flex; gap: 12px; align-items: center; }
   .step-input {
     flex: 1;
     font-family: 'DM Sans', sans-serif;
-    font-size: 28px; font-weight: 600;
-    color: var(--text);
-    background: var(--surface2);
+    font-size: 28px; font-weight: 600; color: var(--text);
+    background: var(--lilac-light);
     border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 18px;
-    outline: none;
+    border-radius: 14px;
+    padding: 14px 18px; outline: none;
     -webkit-appearance: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, background 0.15s;
     text-align: center;
   }
-  .step-input:focus { border-color: var(--green); }
-  .step-input::placeholder { color: var(--border); font-size: 22px; }
-
+  .step-input:focus { border-color: var(--lavender); background: #fff; }
+  .step-input::placeholder { color: var(--lilac-mid); font-size: 22px; }
+ 
   .save-btn {
-    background: var(--green);
-    color: white; border: none;
-    border-radius: 12px;
+    background: linear-gradient(135deg, var(--lavender-dark) 0%, var(--lilac) 100%);
+    color: white; border: none; border-radius: 14px;
     font-family: 'DM Sans', sans-serif;
     font-size: 16px; font-weight: 600;
-    padding: 14px 22px;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
+    padding: 14px 22px; cursor: pointer;
+    box-shadow: 0 3px 12px rgba(115,86,168,0.3);
+    transition: transform 0.1s, box-shadow 0.1s;
   }
-  .save-btn:active { background: var(--green-dark); transform: scale(0.97); }
-
-  .today-saved {
-    padding: 0 20px 20px;
-    display: none;
-  }
-  .today-saved.visible { display: flex; align-items: center; gap: 10px; }
-  .today-saved-count {
-    font-family: 'DM Serif Display', serif;
-    font-size: 32px; color: var(--text);
-  }
+  .save-btn:active { transform: scale(0.96); box-shadow: none; }
+ 
+  /* TODAY SAVED */
+  .today-saved { padding: 0 20px 20px; display: none; }
+  .today-saved.visible { display: flex; align-items: center; gap: 14px; }
+  .today-saved-count { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--lavender-dark); line-height: 1; }
   .today-saved-meta { flex: 1; }
-  .today-saved-label { font-size: 13px; color: var(--text-muted); }
-  .today-goal-pill {
-    font-size: 12px; font-weight: 700;
-    padding: 4px 10px; border-radius: 20px; letter-spacing: 0.04em;
-  }
-  .goal-met   { background: var(--green-light); color: var(--green); }
-  .goal-unmet { background: var(--red-light); color: var(--red); }
-
+  .today-saved-label { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
   .edit-link {
-    font-size: 13px; color: var(--green); font-weight: 600;
+    font-size: 13px; color: var(--lavender); font-weight: 600;
     cursor: pointer; text-decoration: underline;
-    background: none; border: none; padding: 0;
-    font-family: 'DM Sans', sans-serif;
+    background: none; border: none; padding: 0; font-family: 'DM Sans', sans-serif;
   }
-
+  .today-goal-pill { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; letter-spacing: 0.04em; flex-shrink: 0; }
+  .goal-met   { background: var(--green-light); color: var(--green); }
+  .goal-unmet { background: var(--lavender-light); color: var(--lavender-dark); }
+ 
+  /* STREAK */
+  .streak-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+  .streak-flame { font-size: 28px; }
+  .streak-count { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--lavender-dark); line-height: 1; }
+  .streak-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+ 
   /* HISTORY */
-  .history-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 12px var(--shadow);
-    overflow: hidden;
-  }
-  .history-header {
-    padding: 16px 20px 12px;
-    border-bottom: 1px solid var(--border);
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px; color: var(--text);
-  }
-
   .history-row {
     display: flex; align-items: center;
-    padding: 13px 20px;
-    border-bottom: 1px solid var(--border);
-    gap: 14px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 14px;
   }
   .history-row:last-child { border-bottom: none; }
-  .history-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
+  .history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .dot-met   { background: var(--green); }
-  .dot-unmet { background: var(--red); }
+  .dot-unmet { background: var(--lilac); }
   .dot-empty { background: var(--border); }
-  .history-date { font-size: 14px; color: var(--text-muted); width: 90px; flex-shrink: 0; }
-  .history-steps { font-size: 17px; font-weight: 600; flex: 1; }
-  .history-steps.empty { color: var(--text-muted); font-weight: 400; font-size: 14px; }
-  .history-badge {
-    font-size: 11px; font-weight: 700;
-    padding: 2px 8px; border-radius: 10px; letter-spacing: 0.04em;
-  }
+  .history-date { font-size: 13px; color: var(--text-muted); width: 90px; flex-shrink: 0; }
+  .history-steps { font-size: 17px; font-weight: 600; flex: 1; color: var(--text); }
+  .history-steps.empty { color: var(--border); font-weight: 400; font-size: 14px; }
+  .history-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 10px; letter-spacing: 0.03em; }
   .hb-met   { background: var(--green-light); color: var(--green); }
-  .hb-unmet { background: var(--red-light); color: var(--red); }
-
+  .hb-unmet { background: var(--lavender-light); color: var(--lavender-dark); }
+ 
   .empty-history {
     padding: 30px 20px; text-align: center;
-    color: var(--text-muted); font-size: 14px; line-height: 1.6;
+    color: var(--text-muted); font-size: 14px; line-height: 1.7;
   }
 </style>
 </head>
 <body>
-
+ 
 <div class="header">
-  <div class="header-title">Step Tracker</div>
-  <div class="header-sub" id="headerDate">—</div>
+  <div class="header-top">
+    <div>
+      <div class="header-title">My Steps</div>
+      <div class="header-date" id="headerDate">—</div>
+    </div>
+    <div class="header-emoji">💜</div>
+  </div>
 </div>
-
+ 
+<div class="affirmation-bar">
+  <span>✦</span><em id="affirmationText">Loading...</em>
+</div>
+ 
 <div class="main">
-
+ 
   <!-- WEEKLY SUMMARY -->
   <div class="summary-card">
-    <div>
+    <div class="summary-col">
       <div class="summary-label">Weekly Avg</div>
       <div class="summary-value" id="weeklyAvg">—</div>
       <div class="summary-sub" id="weeklyDays">No entries yet</div>
     </div>
     <div class="summary-divider"></div>
-    <div>
+    <div class="summary-col">
       <div class="summary-label">Goal Days</div>
       <div class="summary-value" id="goalDays">0/7</div>
       <div class="summary-sub">7,000+ steps</div>
@@ -229,203 +218,237 @@
     <div class="summary-divider"></div>
     <div class="goal-ring">
       <svg width="64" height="64" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="5"/>
-        <circle id="goalRingCircle" cx="32" cy="32" r="26" fill="none" stroke="#a8d4ae" stroke-width="5"
+        <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="5"/>
+        <circle id="goalRingCircle" cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="5"
           stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"
-          transform="rotate(-90 32 32)" style="transition: stroke-dashoffset 0.6s ease"/>
+          transform="rotate(-90 32 32)" style="transition:stroke-dashoffset 0.6s ease"/>
       </svg>
       <div class="ring-pct" id="goalRingPct">0%</div>
     </div>
   </div>
-
-  <!-- TODAY'S ENTRY -->
-  <div class="log-card">
-    <div class="log-card-header">
-      <div class="log-card-title">Today's Steps</div>
-      <span class="today-badge" id="todayBadgeHeader">Log Now</span>
+ 
+  <!-- STREAK -->
+  <div class="card">
+    <div class="streak-row">
+      <div class="streak-flame">🔥</div>
+      <div>
+        <div class="streak-count" id="streakCount">0</div>
+        <div class="streak-label" id="streakLabel">day streak — start today!</div>
+      </div>
     </div>
-
+  </div>
+ 
+  <!-- TODAY -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Today's Steps</div>
+      <span class="badge" id="todayBadgeHeader" style="background:var(--lavender-light);color:var(--lavender-dark)">Log Now</span>
+    </div>
     <div class="step-input-wrap" id="inputWrap">
       <input class="step-input" id="stepInput" type="number" inputmode="numeric"
         placeholder="0000" min="0" max="99999">
       <button class="save-btn" onclick="saveToday()">Save</button>
     </div>
-
     <div class="today-saved" id="todaySaved">
       <div class="today-saved-count" id="todayCount">—</div>
       <div class="today-saved-meta">
-        <div class="today-saved-label">steps logged today</div>
+        <div class="today-saved-label">steps today</div>
         <button class="edit-link" onclick="editToday()">Edit</button>
       </div>
       <div class="today-goal-pill" id="todayGoalPill"></div>
     </div>
   </div>
-
+ 
   <!-- HISTORY -->
-  <div class="history-card">
-    <div class="history-header">Last 14 Days</div>
-    <div id="historyList"><div class="empty-history">No steps logged yet.<br>Save today's count above to get started!</div></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Last 14 Days</div></div>
+    <div id="historyList">
+      <div class="empty-history">No steps logged yet 💜<br>Save today's count above to get started!</div>
+    </div>
   </div>
-
+ 
 </div>
-
+ 
 <script>
-const GOAL      = 7000;
-const STEPS_KEY = 'steps_log'; // { 'YYYY-MM-DD': number }
-
+const GOAL        = 7000;
+const STEPS_KEY   = 'steps_log';
+const AFFIRM_KEY  = 'steps_affirm_date';
+ 
+const AFFIRMATIONS = [
+  "Every step you take is your body saying yes to life.",
+  "Moving your body is a privilege — and you are honoring it.",
+  "You don't have to run. You just have to move. That is enough.",
+  "Your legs carried you today. That is worth celebrating.",
+  "Movement is medicine, and you are giving yourself the gift of it.",
+  "There is no wrong way to move a body that is trying its best.",
+  "Every walk is an act of self-respect.",
+  "You showed up for your body today. Your body is grateful.",
+  "Not everyone gets to feel the ground beneath their feet. You do.",
+  "Movement isn't about earning anything. It's about feeling alive.",
+  "Your body is not a problem to fix. It is a home to care for.",
+  "One step at a time is still moving forward.",
+  "The simple act of walking is one of the most healing things you can do.",
+  "You are stronger than you know, and your steps prove it.",
+  "Honoring your body through movement is one of the kindest things you can do for yourself.",
+];
+ 
 function getPSTDate() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
-
 function loadLog() {
   try { return JSON.parse(localStorage.getItem(STEPS_KEY) || '{}'); } catch(e) { return {}; }
 }
 function saveLog(log) { localStorage.setItem(STEPS_KEY, JSON.stringify(log)); }
-
+ 
 function formatDate(dateStr) {
   const [y, m, d] = dateStr.split('-');
-  const date = new Date(+y, +m - 1, +d);
+  const date  = new Date(+y, +m - 1, +d);
   const today = getPSTDate();
-  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+  const yest  = new Date(Date.now() - 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
   if (dateStr === today) return 'Today';
-  if (dateStr === yesterday) return 'Yesterday';
+  if (dateStr === yest)  return 'Yesterday';
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
-
 function formatSteps(n) {
   return n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
 }
-
 function getLast14Days() {
-  const days = [];
-  for (let i = 0; i < 14; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }));
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+  });
+}
+ 
+function renderAffirmation() {
+  const today = getPSTDate();
+  if (!localStorage.getItem(AFFIRM_KEY)) localStorage.setItem(AFFIRM_KEY, today);
+  const days = Math.round((new Date(today) - new Date(localStorage.getItem(AFFIRM_KEY))) / 86400000);
+  document.getElementById('affirmationText').textContent = AFFIRMATIONS[days % AFFIRMATIONS.length];
+}
+ 
+function calcStreak(log) {
+  const days = getLast14Days();
+  let streak = 0;
+  for (let i = 1; i < days.length; i++) {
+    if (log[days[i]] !== undefined && log[days[i]] >= GOAL) streak++;
+    else break;
   }
-  return days;
+  if (log[days[0]] !== undefined && log[days[0]] >= GOAL) streak++;
+  return streak;
 }
-
-function getThisWeekDays() {
-  // Last 7 days including today
-  return getLast14Days().slice(0, 7);
+ 
+function renderStreak(log) {
+  const s = calcStreak(log);
+  document.getElementById('streakCount').textContent = s;
+  document.getElementById('streakLabel').textContent = s === 0
+    ? 'day streak — start today!'
+    : s === 1 ? 'day streak — keep it going!'
+    : `day streak — you're on a roll! 💜`;
 }
-
-function renderHeader() {
-  const now = new Date();
-  document.getElementById('headerDate').textContent =
-    now.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'long', day: 'numeric' });
-}
-
+ 
 function renderSummary(log) {
-  const week = getThisWeekDays();
-  const entries = week.map(d => log[d]).filter(v => v !== undefined);
+  const week     = getLast14Days().slice(0, 7);
+  const entries  = week.map(d => log[d]).filter(v => v !== undefined);
   const goalDays = entries.filter(v => v >= GOAL).length;
-  const avg = entries.length ? Math.round(entries.reduce((a, b) => a + b, 0) / entries.length) : null;
-
-  document.getElementById('weeklyAvg').textContent = avg !== null ? formatSteps(avg) : '—';
+  const avg      = entries.length ? Math.round(entries.reduce((a,b) => a+b, 0) / entries.length) : null;
+ 
+  document.getElementById('weeklyAvg').textContent  = avg !== null ? formatSteps(avg) : '—';
   document.getElementById('weeklyDays').textContent = entries.length
     ? `${entries.length} day${entries.length !== 1 ? 's' : ''} logged`
     : 'No entries yet';
   document.getElementById('goalDays').textContent = `${goalDays}/7`;
-
-  const pct = Math.round((goalDays / 7) * 100);
+ 
+  const pct  = Math.round((goalDays / 7) * 100);
   const circ = 163.4;
   document.getElementById('goalRingCircle').style.strokeDashoffset = circ - (circ * pct / 100);
   document.getElementById('goalRingPct').textContent = pct + '%';
 }
-
+ 
 function renderToday(log) {
   const today = getPSTDate();
-  const val = log[today];
-  const inputWrap  = document.getElementById('inputWrap');
-  const todaySaved = document.getElementById('todaySaved');
-  const badge      = document.getElementById('todayBadgeHeader');
-
+  const val   = log[today];
   if (val !== undefined) {
-    inputWrap.style.display = 'none';
-    todaySaved.classList.add('visible');
+    document.getElementById('inputWrap').style.display = 'none';
+    document.getElementById('todaySaved').classList.add('visible');
     document.getElementById('todayCount').textContent = val.toLocaleString();
-    const met = val >= GOAL;
+    const met  = val >= GOAL;
     const pill = document.getElementById('todayGoalPill');
     pill.textContent = met ? '✓ Goal met!' : `${(GOAL - val).toLocaleString()} to go`;
-    pill.className = 'today-goal-pill ' + (met ? 'goal-met' : 'goal-unmet');
-    badge.textContent = met ? '✓ Goal Met' : 'Logged';
+    pill.className   = 'today-goal-pill ' + (met ? 'goal-met' : 'goal-unmet');
+    const badge = document.getElementById('todayBadgeHeader');
+    badge.textContent       = met ? '✓ Goal Met' : 'Logged';
+    badge.style.background  = met ? 'var(--green-light)' : 'var(--lavender-light)';
+    badge.style.color       = met ? 'var(--green)' : 'var(--lavender-dark)';
   } else {
-    inputWrap.style.display = 'flex';
-    todaySaved.classList.remove('visible');
-    badge.textContent = 'Log Now';
+    document.getElementById('inputWrap').style.display = 'flex';
+    document.getElementById('todaySaved').classList.remove('visible');
+    const badge = document.getElementById('todayBadgeHeader');
+    badge.textContent      = 'Log Now';
+    badge.style.background = 'var(--lavender-light)';
+    badge.style.color      = 'var(--lavender-dark)';
   }
 }
-
+ 
 function renderHistory(log) {
-  const days = getLast14Days();
-  const list = document.getElementById('historyList');
+  const days   = getLast14Days();
+  const list   = document.getElementById('historyList');
   const hasAny = days.some(d => log[d] !== undefined);
-
   if (!hasAny) {
-    list.innerHTML = '<div class="empty-history">No steps logged yet.<br>Save today\'s count above to get started!</div>';
+    list.innerHTML = '<div class="empty-history">No steps logged yet 💜<br>Save today\'s count above to get started!</div>';
     return;
   }
-
   list.innerHTML = days.map(d => {
     const val = log[d];
-    if (val === undefined) {
-      return `<div class="history-row">
-        <div class="history-dot dot-empty"></div>
-        <div class="history-date">${formatDate(d)}</div>
-        <div class="history-steps empty">—</div>
-      </div>`;
-    }
+    if (val === undefined) return `<div class="history-row">
+      <div class="history-dot dot-empty"></div>
+      <div class="history-date">${formatDate(d)}</div>
+      <div class="history-steps empty">—</div>
+    </div>`;
     const met = val >= GOAL;
     return `<div class="history-row">
       <div class="history-dot ${met ? 'dot-met' : 'dot-unmet'}"></div>
       <div class="history-date">${formatDate(d)}</div>
       <div class="history-steps">${val.toLocaleString()}</div>
-      <div class="history-badge ${met ? 'hb-met' : 'hb-unmet'}">${met ? '✓' : `−${(GOAL-val).toLocaleString()}`}</div>
+      <div class="history-badge ${met ? 'hb-met' : 'hb-unmet'}">${met ? '✓' : `−${(GOAL - val).toLocaleString()}`}</div>
     </div>`;
   }).join('');
 }
-
+ 
+function renderHeader() {
+  document.getElementById('headerDate').textContent =
+    new Date().toLocaleDateString('en-US', {
+      timeZone: 'America/Los_Angeles', weekday: 'long', month: 'long', day: 'numeric'
+    });
+}
+ 
 function render() {
   const log = loadLog();
-  renderHeader();
-  renderSummary(log);
-  renderToday(log);
-  renderHistory(log);
+  renderHeader(); renderAffirmation(); renderSummary(log);
+  renderStreak(log); renderToday(log); renderHistory(log);
 }
-
+ 
 function saveToday() {
   const raw = document.getElementById('stepInput').value.trim();
   const val = parseInt(raw);
-  if (!raw || isNaN(val) || val < 0) {
-    document.getElementById('stepInput').focus();
-    return;
-  }
+  if (!raw || isNaN(val) || val < 0) { document.getElementById('stepInput').focus(); return; }
   const log = loadLog();
   log[getPSTDate()] = val;
   saveLog(log);
   document.getElementById('stepInput').value = '';
   render();
 }
-
+ 
 function editToday() {
   const log = loadLog();
-  const today = getPSTDate();
-  const existing = log[today];
+  const existing = log[getPSTDate()];
   document.getElementById('inputWrap').style.display = 'flex';
   document.getElementById('todaySaved').classList.remove('visible');
-  if (existing !== undefined) {
-    document.getElementById('stepInput').value = existing;
-  }
+  if (existing !== undefined) document.getElementById('stepInput').value = existing;
   document.getElementById('stepInput').focus();
 }
-
-// Save on Enter key
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') saveToday();
-});
-
+ 
+document.addEventListener('keydown', e => { if (e.key === 'Enter') saveToday(); });
+ 
 render();
 </script>
 </body>
