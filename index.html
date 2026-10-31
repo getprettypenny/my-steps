@@ -140,6 +140,16 @@
   }
   .save-btn:active { transform: scale(0.96); box-shadow: none; }
  
+  /* DAY TOGGLE */
+  .day-toggle { display: flex; gap: 4px; margin: 16px 20px 0; padding: 4px; background: var(--lilac-light); border: 1px solid var(--border); border-radius: 14px; }
+  .day-btn {
+    flex: 1; border: none; background: transparent; border-radius: 10px;
+    padding: 9px 0; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    color: var(--text-muted); cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .day-btn.active { background: #fff; color: var(--lavender-dark); box-shadow: 0 1px 6px var(--shadow); }
+  .day-toggle + .today-saved.visible { padding-top: 16px; }
+
   /* TODAY SAVED */
   .today-saved { padding: 0 20px 20px; display: none; }
   .today-saved.visible { display: flex; align-items: center; gap: 14px; }
@@ -241,8 +251,12 @@
   <!-- TODAY -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">Today's Steps</div>
+      <div class="card-title" id="logTitle">Today's Steps</div>
       <span class="badge" id="todayBadgeHeader" style="background:var(--lavender-light);color:var(--lavender-dark)">Log Now</span>
+    </div>
+    <div class="day-toggle">
+      <button class="day-btn active" id="dayBtnToday" onclick="selectDay('today')">Today</button>
+      <button class="day-btn" id="dayBtnYesterday" onclick="selectDay('yesterday')">Yesterday</button>
     </div>
     <div class="step-input-wrap" id="inputWrap">
       <input class="step-input" id="stepInput" type="number" inputmode="numeric"
@@ -252,7 +266,7 @@
     <div class="today-saved" id="todaySaved">
       <div class="today-saved-count" id="todayCount">—</div>
       <div class="today-saved-meta">
-        <div class="today-saved-label">steps today</div>
+        <div class="today-saved-label" id="todaySavedLabel">steps today</div>
         <button class="edit-link" onclick="editToday()">Edit</button>
       </div>
       <div class="today-goal-pill" id="todayGoalPill"></div>
@@ -295,6 +309,18 @@ const AFFIRMATIONS = [
 function getPSTDate() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
+function getPSTYesterday() {
+  const [y, m, d] = getPSTDate().split('-');
+  const dt = new Date(+y, +m - 1, +d - 1);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+}
+let selectedDay = 'today'; // 'today' | 'yesterday'
+function getSelectedDate() { return selectedDay === 'yesterday' ? getPSTYesterday() : getPSTDate(); }
+function selectDay(day) {
+  selectedDay = day;
+  document.getElementById('stepInput').value = '';
+  render();
+}
 function loadLog() {
   try { return JSON.parse(localStorage.getItem(STEPS_KEY) || '{}'); } catch(e) { return {}; }
 }
@@ -304,7 +330,7 @@ function formatDate(dateStr) {
   const [y, m, d] = dateStr.split('-');
   const date  = new Date(+y, +m - 1, +d);
   const today = getPSTDate();
-  const yest  = new Date(Date.now() - 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+  const yest  = getPSTYesterday();
   if (dateStr === today) return 'Today';
   if (dateStr === yest)  return 'Yesterday';
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -365,8 +391,12 @@ function renderSummary(log) {
 }
  
 function renderToday(log) {
-  const today = getPSTDate();
-  const val   = log[today];
+  const isYest = selectedDay === 'yesterday';
+  document.getElementById('logTitle').textContent        = isYest ? "Yesterday's Steps" : "Today's Steps";
+  document.getElementById('todaySavedLabel').textContent = isYest ? 'steps yesterday' : 'steps today';
+  document.getElementById('dayBtnToday').classList.toggle('active', !isYest);
+  document.getElementById('dayBtnYesterday').classList.toggle('active', isYest);
+  const val   = log[getSelectedDate()];
   if (val !== undefined) {
     document.getElementById('inputWrap').style.display = 'none';
     document.getElementById('todaySaved').classList.add('visible');
@@ -432,7 +462,7 @@ function saveToday() {
   const val = parseInt(raw);
   if (!raw || isNaN(val) || val < 0) { document.getElementById('stepInput').focus(); return; }
   const log = loadLog();
-  log[getPSTDate()] = val;
+  log[getSelectedDate()] = val;
   saveLog(log);
   document.getElementById('stepInput').value = '';
   render();
@@ -440,7 +470,7 @@ function saveToday() {
  
 function editToday() {
   const log = loadLog();
-  const existing = log[getPSTDate()];
+  const existing = log[getSelectedDate()];
   document.getElementById('inputWrap').style.display = 'flex';
   document.getElementById('todaySaved').classList.remove('visible');
   if (existing !== undefined) document.getElementById('stepInput').value = existing;
